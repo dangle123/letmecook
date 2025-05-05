@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="backgroud">#FFA233</color>
+    <color name="backgroud_Bottom">#90FFA233</color>
+    <color name="btnEnb">#E7E8EB</color>
+    <color name="btnOk">#FF8B00</color>
+    <color name="btnCancle">#338DC9</color>
+    <color name="backgroundItem">#B17A7A</color>
+    <color name="editText">#E7E8EB</color>
+    <color name="textHint">#C5C6C9</color>
+    <color name="textLink">#0071BB</color>
+    <color name = "header">#EE7600</color>
+    <color name = "red">#E8002E</color>
+    <color name = "blue">#0071BB</color>
+    <color name = "green">#00A534</color>
+
+</resources>

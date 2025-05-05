@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.SignActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="175dp"
+        android:layout_marginEnd="52dp"
+        android:background="@drawable/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edtUnameSign"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="50dp"
+        android:background="@drawable/edittext_border"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="@string/tendangnhap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <EditText
+        android:id="@+id/edtPword1"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="@string/matkhau"
+        android:background="@drawable/edittext_border"
+        app:layout_constraintEnd_toEndOf="@+id/edtUnameSign"
+        app:layout_constraintStart_toStartOf="@+id/edtUnameSign"
+        app:layout_constraintTop_toBottomOf="@+id/edtUnameSign" />
+
+    <EditText
+        android:id="@+id/edtPword2"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:ems="10"
+        android:inputType="text"
+        android:background="@drawable/edittext_border"
+        android:hint="@string/matkhau2"
+        app:layout_constraintEnd_toEndOf="@+id/edtPword1"
+        app:layout_constraintStart_toStartOf="@+id/edtPword1"
+        app:layout_constraintTop_toBottomOf="@+id/edtPword1" />
+
+    <Button
+        android:id="@+id/btnSign"
+        android:layout_width="300dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="50dp"
+        android:text="ĐĂNG KÝ"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/btnEnb"
+
+        app:layout_constraintEnd_toEndOf="@+id/edtPword2"
+        app:layout_constraintStart_toStartOf="@+id/edtPword2"
+        app:layout_constraintTop_toBottomOf="@+id/edtPword2" />
+
+    <TextView
+        android:id="@+id/textViewLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="16dp"
+        android:text="Đã có tài khoản ?"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSign" />
+</androidx.constraintlayout.widget.ConstraintLayout>

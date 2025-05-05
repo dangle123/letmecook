@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1028216574310",
+    "project_id": "myfood-89187",
+    "storage_bucket": "myfood-89187.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1028216574310:android:680d3b90f9ea2908f3f8a7",
+        "android_client_info": {
+          "package_name": "com.example.letmecook"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCox1QVg-CX4JSVX8MlqTYUg3ItUixnTrQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

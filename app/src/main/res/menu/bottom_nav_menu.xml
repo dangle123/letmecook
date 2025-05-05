@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_book"
+        android:icon="@drawable/recipe_book"
+        android:title="Tủ sách"/>
+        <item
+            android:id="@+id/nav_noti"
+            android:icon="@drawable/bell"
+            android:title="Thông báo"/>
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/home"
+        android:title="Trang chủ"/>
+
+
+    <item
+        android:id="@+id/nav_note"
+        android:icon="@drawable/notebook"
+        android:title="Ghi chú"/>
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/user"
+        android:title="Tôi"/>
+
+</menu>

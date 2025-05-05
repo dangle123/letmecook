@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">LetMeCook</string>
+    <string name="tendangnhap">Tài khoản</string>
+    <string name="matkhau">Mật khẩu</string>
+    <string name="guiyeucau">Gửi yêu cầu</string>
+    <string name="matkhau2">Nhập lại mật khẩu</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
