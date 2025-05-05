@@ -39,6 +39,7 @@ public class ChangePassWord extends AppCompatActivity {
                 String inputText1 = edtAgain.getText().toString().trim();
                 int length1 = inputText1.length();
 
+
                 String inputText2 = edtPass.getText().toString().trim();
                 int length2 = inputText2.length();
 
