@@ -42,6 +42,7 @@ public class ChangePassWord extends AppCompatActivity {
                 String inputText2 = edtPass.getText().toString().trim();
                 int length2 = inputText2.length();
 
+
                 String text1 = edtAgain.getText().toString().trim();
                 String text2 = edtPass.getText().toString().trim();
                 boolean isValid = !text1.isEmpty() && !text2.isEmpty() && text1.length() >= 6 && text2.length() >= 6;
