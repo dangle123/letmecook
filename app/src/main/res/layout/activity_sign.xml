@@ -31,6 +31,8 @@
         android:ems="10"
         android:inputType="text"
         android:hint="@string/tendangnhap"
+        android:textColor="@color/black"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
@@ -43,6 +45,7 @@
         android:ems="10"
         android:inputType="text"
         android:hint="@string/matkhau"
+        android:textColor="@color/black"
         android:background="@drawable/edittext_border"
         app:layout_constraintEnd_toEndOf="@+id/edtUnameSign"
         app:layout_constraintStart_toStartOf="@+id/edtUnameSign"
@@ -55,6 +58,7 @@
         android:layout_marginTop="10dp"
         android:ems="10"
         android:inputType="text"
+        android:textColor="@color/black"
         android:background="@drawable/edittext_border"
         android:hint="@string/matkhau2"
         app:layout_constraintEnd_toEndOf="@+id/edtPword1"
@@ -67,9 +71,10 @@
         android:layout_height="63dp"
         android:layout_marginTop="50dp"
         android:text="ĐĂNG KÝ"
+        android:textSize="24dp"
+        android:textStyle="bold"
         android:textColor="@color/white"
         android:backgroundTint="@color/btnEnb"
-
         app:layout_constraintEnd_toEndOf="@+id/edtPword2"
         app:layout_constraintStart_toStartOf="@+id/edtPword2"
         app:layout_constraintTop_toBottomOf="@+id/edtPword2" />

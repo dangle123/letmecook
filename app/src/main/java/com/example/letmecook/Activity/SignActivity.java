@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -48,7 +50,7 @@ public class SignActivity extends AppCompatActivity {
         textviewLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SignActivity.this, LoginActivity.class);
+                Intent intent = new Intent(SignActivity.this, UpdateProfile.class);
                 startActivity(intent);
                 finish();
             }
@@ -56,6 +58,11 @@ public class SignActivity extends AppCompatActivity {
         btnSign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnSign.setEnabled(false); // Vô hiệu hóa
+
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    btnSign.setEnabled(true); // Bật lại sau 3 giây
+                }, 3000);
                 checkPassword();
             }
         });

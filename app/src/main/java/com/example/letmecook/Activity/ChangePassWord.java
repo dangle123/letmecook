@@ -31,6 +31,7 @@ public class ChangePassWord extends AppCompatActivity {
         edtPass = findViewById(R.id.edtChage);
         edtAgain = findViewById(R.id.edtagain);
 
+
         edtAgain.addTextChangedListener(new TextWatcher() {
 
             public void afterTextChanged(Editable s) {
