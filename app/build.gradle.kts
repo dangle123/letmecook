@@ -57,4 +57,6 @@ dependencies {
 
 
     implementation ("com.android.volley:volley:1.2.1")
+
+    implementation ("com.google.firebase:firebase-database:20.3.0")
 }

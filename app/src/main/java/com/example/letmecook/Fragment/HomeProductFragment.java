@@ -16,9 +16,11 @@ import com.example.letmecook.Activity.AllItemActivity;
 import com.example.letmecook.Activity.CategoriActivity;
 import com.example.letmecook.Activity.DetailItem;
 import com.example.letmecook.Model.DanhSachMonAn;
+import com.example.letmecook.Model.User;
 import com.example.letmecook.R;
 import com.example.letmecook.adapter.ListMonAnAdapter;
 import com.example.letmecook.adapter.LoaiMonAnAdapter;
+import com.example.letmecook.cache.CachedUserManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FieldPath;
@@ -47,6 +49,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.letmecook.Model.LoaiMonAn;
 
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.Source;
 
 
 public class HomeProductFragment extends Fragment {
@@ -73,7 +76,7 @@ public TextView tvAlltem;
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.activity_home_fragment, container, false);
-
+        CachedUserManager.clearCache();
         viewFlipper = view.findViewById(R.id.viewflipper);
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
@@ -294,13 +297,71 @@ public TextView tvAlltem;
 
 
 
-    private void userDetail(String userId) {
+//    private void userDetail(String userId) {
+//
+//        db = FirebaseFirestore.getInstance();
+//
+//        db.collection("user").document(userId)
+//                .get(Source.SERVER)
+//                .addOnSuccessListener(documentSnapshot -> {
+//                    if (documentSnapshot.exists()) {
+//                        Long coinTamp = documentSnapshot.getLong("coin");
+//                        Integer userCoinTamp = coinTamp != null ? coinTamp.intValue() : 0;
+//                        userCoin = userCoinTamp;
+//
+//                        favoritesUser = (List<Long>) documentSnapshot.get("favorites");
+//                        LikeUser = (List<Long>) documentSnapshot.get("like");
+//
+//                    } else {
+//
+//                    }
+//                })
+//                .addOnFailureListener(e -> Log.e("UserFavorites", "Lỗi khi lấy dữ liệu", e));
+//
+//    }
+private void userDetail(String userId) {
+    db = FirebaseFirestore.getInstance();
 
-        db = FirebaseFirestore.getInstance();
+    // 1️⃣ Lấy từ cache trước
+    db.collection("user").document(userId)
+            .get(Source.SERVER)
+            .addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    com.example.letmecook.Model.User user =
+                            documentSnapshot.toObject(com.example.letmecook.Model.User.class);
+                    if (user != null) {
+                        // Lưu vào cache
+                        CachedUserManager.setCurrentUser(user);
+                        Log.d("UserCache222", "Đã lưu user vào cache: " + user.getName());
+                    }
+
+                    Long coinTamp = documentSnapshot.getLong("coin");
+                    Integer userCoinTamp = coinTamp != null ? coinTamp.intValue() : 0;
+                    userCoin = userCoinTamp;
+
+                    favoritesUser = (List<Long>) documentSnapshot.get("favorites");
+                    LikeUser = (List<Long>) documentSnapshot.get("like");
+
+                    Log.d("UserCache", "Dữ liệu user lấy từ CACHE" + favoritesUser);
+
+                } else {
+                    Log.d("UserCache22", "Cache trống, tải từ server...");
+                    fetchUserFromServer(userId);
+                }
+            })
+            .addOnFailureListener(e -> {
+                Log.w("UserCache", "Không đọc được cache, lấy từ server", e);
+                fetchUserFromServer(userId);
+            });
+}
+
+    // 2️⃣ Hàm lấy từ server (và cập nhật cache)
+    private void fetchUserFromServer(String userId) {
         db.collection("user").document(userId)
-                .get()
+                .get(Source.SERVER)
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
+
                         Long coinTamp = documentSnapshot.getLong("coin");
                         Integer userCoinTamp = coinTamp != null ? coinTamp.intValue() : 0;
                         userCoin = userCoinTamp;
@@ -308,12 +369,12 @@ public TextView tvAlltem;
                         favoritesUser = (List<Long>) documentSnapshot.get("favorites");
                         LikeUser = (List<Long>) documentSnapshot.get("like");
 
+                        Log.d("UserCache", "Đã tải dữ liệu user từ SERVER");
                     } else {
-
+                        Log.d("UserCache", "Không tìm thấy user trong Firestore");
                     }
                 })
-                .addOnFailureListener(e -> Log.e("UserFavorites", "Lỗi khi lấy dữ liệu", e));
-
+                .addOnFailureListener(e -> Log.w("UserCache", "Lỗi lấy từ server", e));
     }
 
 

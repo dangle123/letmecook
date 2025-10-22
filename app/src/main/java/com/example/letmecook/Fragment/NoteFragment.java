@@ -1,105 +1,96 @@
 package com.example.letmecook.Fragment;
 
+import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Handler;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.letmecook.Model.DanhSachPost;
 import com.example.letmecook.R;
+import com.example.letmecook.adapter.PostAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 
-import java.security.AccessController;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 public class NoteFragment extends Fragment {
-    private EditText editTextNote;
-    private FirebaseAuth mAuth;
+
+    private RecyclerView recyclerView;
     private FirebaseFirestore db;
-    private FirebaseAuth auth;
-    private DocumentReference noteRef;
-    private Handler handler = new Handler();
-    private Runnable saveRunnable;
+    private FirebaseAuth mAuth;
 
-    private Button btnSave,btnDelete;
-    private EditText edtContent;
+    private ArrayList<DanhSachPost> postList;
+    private PostAdapter postAdapter;
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_note, container, false);
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
 
+        View view = inflater.inflate(R.layout.activity_post, container, false);
+
+        recyclerView = view.findViewById(R.id.recyclerViewPost);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        int spaceInPixels = (int) (10 * getResources().getDisplayMetrics().density);
+        recyclerView.addItemDecoration(new SpaceItemDecoration(spaceInPixels));
         db = FirebaseFirestore.getInstance();
-        btnSave = view.findViewById(R.id.btnSave);
-        btnDelete = view.findViewById(R.id.btnDelete);
-        edtContent = view.findViewById(R.id.edtContent);
+        mAuth = FirebaseAuth.getInstance();
 
-        LoadContent();
+        postList = new ArrayList<>();
+        postAdapter = new PostAdapter(getContext(), postList);
+        recyclerView.setAdapter(postAdapter);
 
-
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAuth = FirebaseAuth.getInstance();
-                FirebaseUser user = mAuth.getCurrentUser();
-                String userId = user.getUid();
-                String content = edtContent.getText().toString();
-                Log.d("content","content :" + content);
-                db.collection("user").document(userId).update("note", content).addOnSuccessListener(aVoid -> Toast.makeText(v.getContext(), "Ghi chú đã được Save!", Toast.LENGTH_SHORT).show())
-                        .addOnFailureListener(e ->
-                                Toast.makeText(v.getContext(), "Lỗi khi lưu ghi chú!", Toast.LENGTH_SHORT).show());
-            }
-        });
-
-        btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAuth = FirebaseAuth.getInstance();
-                FirebaseUser user = mAuth.getCurrentUser();
-                String userId = user.getUid();
-                String content = "";
-                db.collection("user").document(userId).update("note",content).addOnSuccessListener(aVoid -> Toast.makeText(v.getContext(), "Ghi chú đã được Delete!", Toast.LENGTH_SHORT).show())
-                        .addOnFailureListener(e ->
-                                Toast.makeText(v.getContext(), "Lỗi khi lưu ghi chú!", Toast.LENGTH_SHORT).show());
-                LoadContent();
-            }
-        });
+        loadLatestPosts();
 
         return view;
     }
+    public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
+        private final int space;
 
-    private void LoadContent() {
+        public SpaceItemDecoration(int space) {
+            this.space = space;
+        }
 
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = mAuth.getCurrentUser();
-        String userId = user.getUid();
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            outRect.bottom = space; // khoảng cách giữa các item (phía dưới)
 
-        db.collection("user").document(userId).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String content = documentSnapshot.getString("note");
+            // Tuỳ chọn: nếu bạn muốn cách đều cả 4 phía
+            // outRect.top = space;
+            // outRect.left = space;
+            // outRect.right = space;
+        }
+    }
+    private void loadLatestPosts() {
+        db.collection("post")
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .limit(10)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    postList.clear();
 
-                        edtContent.setText(content);
-                    } else {
-
+                    for (DocumentSnapshot document : queryDocumentSnapshots) {
+                        DanhSachPost post = document.toObject(DanhSachPost.class);
+                        if (post != null) {
+                            postList.add(post);
+                            Log.d("TEST_IMAGE_USER", "imageUser = " + document.getString("imageUser"));
+                        }
                     }
+
+                    postAdapter.notifyDataSetChanged();
                 })
-                .addOnFailureListener(e -> Log.e("Firebase", "Lỗi khi tải ghi chú!", e));
+                .addOnFailureListener(e -> Log.e("Firebase", "Lỗi khi tải bài post!", e));
     }
 }

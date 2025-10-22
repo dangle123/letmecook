@@ -10,6 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,6 +35,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
+                    android:paddingTop="10dp"
                     android:id="@+id/textView23"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -61,7 +63,7 @@
                 android:layout_marginTop="5dp"
                 android:text="Email"
                 app:layout_constraintStart_toStartOf="@+id/textView24"
-                app:layout_constraintTop_toBottomOf="@+id/editTextText" />
+                app:layout_constraintTop_toBottomOf="@+id/edtUserName" />
 
             <TextView
                 android:id="@+id/textView26"
@@ -70,7 +72,7 @@
                 android:layout_marginTop="5dp"
                 android:text="Sinh nhật"
                 app:layout_constraintStart_toStartOf="@+id/textView25"
-                app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
+                app:layout_constraintTop_toBottomOf="@+id/edtEmail" />
 
             <TextView
                 android:id="@+id/textView27"
@@ -78,11 +80,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="Ảnh đại diện"
-                app:layout_constraintStart_toStartOf="@+id/editTextText3"
-                app:layout_constraintTop_toBottomOf="@+id/editTextText3" />
+                app:layout_constraintStart_toStartOf="@+id/edtBirth"
+                app:layout_constraintTop_toBottomOf="@+id/edtBirth" />
 
             <EditText
-                android:id="@+id/editTextText"
+                android:id="@+id/edtUserName"
                 android:layout_width="250dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="5dp"
@@ -98,7 +100,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView24" />
 
             <EditText
-                android:id="@+id/editTextText2"
+                android:id="@+id/edtEmail"
                 android:layout_width="250dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="5dp"
@@ -109,12 +111,12 @@
                 android:textColor="@color/black"
 
                 android:background="@drawable/edittext_border"
-                app:layout_constraintEnd_toEndOf="@+id/editTextText"
+                app:layout_constraintEnd_toEndOf="@+id/edtUserName"
                 app:layout_constraintStart_toStartOf="@+id/textView25"
                 app:layout_constraintTop_toBottomOf="@+id/textView25" />
 
             <EditText
-                android:id="@+id/editTextText3"
+                android:id="@+id/edtBirth"
                 android:layout_width="250dp"
                 android:layout_height="50dp"
                 android:ems="10"
@@ -124,12 +126,12 @@
                 android:textColor="@color/black"
 
                 android:background="@drawable/edittext_border"
-                app:layout_constraintEnd_toEndOf="@+id/editTextText2"
-                app:layout_constraintStart_toStartOf="@+id/editTextText2"
+                app:layout_constraintEnd_toEndOf="@+id/edtEmail"
+                app:layout_constraintStart_toStartOf="@+id/edtEmail"
                 app:layout_constraintTop_toBottomOf="@+id/textView26" />
 
             <TextView
-                android:id="@+id/textView28"
+                android:id="@+id/btnUpdate"
                 android:layout_width="250dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="100dp"

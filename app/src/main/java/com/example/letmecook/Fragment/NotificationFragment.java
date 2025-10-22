@@ -50,7 +50,7 @@ public class NotificationFragment extends Fragment {
         recyclerviewNotifi.setAdapter(notiAdapter);
 
         String userId = user.getUid();
-        favorites(userId);
+        getFavoriteDishes(userId);
         return view;
     }
 
@@ -62,7 +62,8 @@ public class NotificationFragment extends Fragment {
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
                         favorites = (List<Long>) documentSnapshot.get("notifi");
-
+                        Log.d("datanotifire", "datanotifire với ID: " + favorites);
+                        Log.d("datanotifire", "datanotifire với ID: " + userId);
                         if (favorites != null) {
                             getFavoriteDishes(userId);
 

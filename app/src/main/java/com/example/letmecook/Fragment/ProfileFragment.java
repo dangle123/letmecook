@@ -120,7 +120,7 @@ public class ProfileFragment extends Fragment {
                         if (documentSnapshot.exists()) {
                             String name = documentSnapshot.getString("name");
                             String avatarUrl = documentSnapshot.getString("avata");
-                            String email = documentSnapshot.getString("email");
+                            String email = documentSnapshot.getString("e-mail");
                             String birth = documentSnapshot.getString("birth");
                             String lv = documentSnapshot.getString("lv");
                             Long coin = documentSnapshot.getLong("coin");

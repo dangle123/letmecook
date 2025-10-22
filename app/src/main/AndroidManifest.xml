@@ -19,6 +19,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Activity.CommentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.PostActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.UpdateProfile"
             android:exported="false" />
         <activity

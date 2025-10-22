@@ -28,11 +28,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SignActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
    Button btnSign;
    TextView textviewLogin;
+
+    public  FirebaseFirestore db;
    EditText edtUnameSign,edtPword1,edtPword2;
     @SuppressLint("MissingInflatedId")
     @Override
@@ -121,12 +128,8 @@ public class SignActivity extends AppCompatActivity {
             {
                 Log.d("Main", "createUserWithEmail:success");
                 FirebaseUser user = mAuth.getCurrentUser();
-
-                Toast.makeText(getApplicationContext(), ((FirebaseUser) user).getEmail(), Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(SignActivity.this,LoginActivity.class);
-                startActivity(intent);
-
-                finish();
+                SenRequest();
+                creatChat();
             } else {
                 Log.w("Main", "createUserWithEmail:failure", task.getException());
                 String logCat = String.valueOf(task.getException());
@@ -142,7 +145,76 @@ public class SignActivity extends AppCompatActivity {
 
         });
 
+
+
+
+    }
+    private void creatChat() {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        String email = edtUnameSign.getText().toString();
+        FirebaseUser user = mAuth.getCurrentUser();
+        String userId = user.getUid();
+        db = FirebaseFirestore.getInstance();
+        Map<String, Object> SenRequestUser = new HashMap<>();
+
+        SenRequestUser.put("userId", userId);
+//
+      SenRequestUser.put("messages", new ArrayList<String>());
+
+        db.collection("conversations").add(SenRequestUser).addOnSuccessListener(documentReference ->
+                {  Log.d("Firestore", "Thêm thành công với ID: " + userId);
+                    intentOk();
+
+                })
+                .addOnFailureListener(e -> {
+
+                    Log.e("Firestore", "Lỗi khi thêm dữ liệu!", e);
+                    Toast.makeText(SignActivity.this, "Lỗi khi gửi yêu cầu!", Toast.LENGTH_SHORT).show();
+                });
     }
 
+    private void SenRequest() {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        String email = edtUnameSign.getText().toString();
+        FirebaseUser user = mAuth.getCurrentUser();
+        String userId = user.getUid();
+        db = FirebaseFirestore.getInstance();
+        Map<String, Object> SenRequestUser = new HashMap<>();
+//        SenRequestUser.put("avata", "https://i.pinimg.com/736x/b1/8a/4a/b18a4ac5454c2e3d8d0b519f3b84dcb6.jpg");
+//        SenRequestUser.put("birth", "");
+//        SenRequestUser.put("e-mail", email);
+//
+//        SenRequestUser.put("favorites", new ArrayList<String>());
+//        SenRequestUser.put("like", new ArrayList<String>());
+//        SenRequestUser.put("notified", new ArrayList<String>());
+//
+//        SenRequestUser.put("note", "0");
+//        SenRequestUser.put("lv", "0");
+//        SenRequestUser.put("name", "test");
+//        SenRequestUser.put("coin", 100);
+        SenRequestUser.put("timestamp", System.currentTimeMillis());
+
+        db.collection("user").document(userId).set(SenRequestUser).addOnSuccessListener(documentReference ->
+                {  Log.d("Firestore", "Thêm thành công với ID: " + userId);
+                    intentOk();
+
+                })
+                .addOnFailureListener(e -> {
+
+                    Log.e("Firestore", "Lỗi khi thêm dữ liệu!", e);
+                    Toast.makeText(SignActivity.this, "Lỗi khi gửi yêu cầu!", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void intentOk() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        String userId = user.getUid();
+        Toast.makeText(getApplicationContext(), ((FirebaseUser) user).getEmail(), Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(SignActivity.this,UpdateProfile.class);
+        intent.putExtra("userId",userId);
+        startActivity(intent);
+
+        finish();
+    }
 
 }
