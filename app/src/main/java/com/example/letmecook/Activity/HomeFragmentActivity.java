@@ -1,6 +1,8 @@
 package com.example.letmecook.Activity;
 
 import android.os.Bundle;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,7 +13,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class HomeFragmentActivity extends AppCompatActivity {
 
-
+    ProgressBar progressBar;
+    LinearLayout contentLayout;
     BottomNavigationView bottomNavigationView;
 
 

@@ -57,6 +57,8 @@
                         android:layout_marginStart="20dp"
                         android:ems="10"
                         android:inputType="text"
+                        android:textSize="16dp"
+                        android:textColor="@color/black"
                         android:text="Nhập bình luận"
                         android:background="@drawable/edittext_border"
                         app:layout_constraintBottom_toBottomOf="parent"

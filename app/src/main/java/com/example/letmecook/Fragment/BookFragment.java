@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,6 +36,7 @@ public class BookFragment extends Fragment {
     private FirebaseFirestore db;
     private boolean isLiked = true;
     private ListMonAnAdapter monAnAdapter;
+    private ImageView imageNodata;
     private List<Long> favorites = new ArrayList<>();
     private List<DanhSachMonAn> DanhSachMonAn = new ArrayList<>();
 
@@ -43,7 +45,7 @@ public class BookFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_book, container, false);
 
                 recyclerViewBook = view.findViewById(R.id.recyclerBook);
-
+        imageNodata = view.findViewById(R.id.imageNodata);
         recyclerViewBook.setLayoutManager(new LinearLayoutManager(getContext()));
         LinearLayoutManager layoutLoadMonAnManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewBook.setOverScrollMode(View.OVER_SCROLL_ALWAYS);
@@ -57,6 +59,8 @@ public class BookFragment extends Fragment {
         }
         favorites(user.getUid());
 
+        imageNodata.setVisibility(view.VISIBLE);
+
         monAnAdapter.setOnItemClickListener(new ListMonAnAdapter.OnItemClickListener() {
 
             public void onItemClick(DanhSachMonAn DanhSachMonAn,int position) {
@@ -65,6 +69,7 @@ public class BookFragment extends Fragment {
                 intent.putExtra("TEN_MON_AN", DanhSachMonAn.getTen());
                 intent.putExtra("HINH_ANH", DanhSachMonAn.getHinhAnh());
                 intent.putExtra("ID",DanhSachMonAn.getCategories_id());
+                intent.putExtra("VIDEO",DanhSachMonAn.getVideo());
                 startActivity(intent);
             }
         });
@@ -104,6 +109,7 @@ public class BookFragment extends Fragment {
         db.collection("recipes ") .whereIn("id", favoriteIds)
                 .get().addOnSuccessListener(queryDocumentSnapshots -> {
                     if (!queryDocumentSnapshots.isEmpty()) {
+                        imageNodata.setVisibility(View.GONE);
                         DanhSachMonAn.clear();
 
                         for (DocumentSnapshot document : queryDocumentSnapshots) {
@@ -113,10 +119,13 @@ public class BookFragment extends Fragment {
                                     String id = document.getString("id");
                                     String ten = document.getString("title");
                                     String hinhAnh = document.getString("url");
-                                    String categories_id = document.getString("categories_id");
-                                    ArrayList<Long> nguyenlieu = (ArrayList<Long>) document.get("ingredients");
-                                    ArrayList<Long> buocnau = (ArrayList<Long>) document.get("instructions");
 
+                                    String categories_id = document.getString("categories_id");
+                                    String video = document.getString("video");
+                                    Log.d("video categori ",video + " / " + categories_id );
+                                    ArrayList<String> nguyenlieu = (ArrayList<String>) document.get("ingredients");
+                                    ArrayList<String> buocnau = (ArrayList<String>) document.get("instructions");
+                                    ArrayList<String> tips = (ArrayList<String>) document.get("tips");
                                     Long userView = document.getLong("view");
                                     Integer userViewInt = userView != null ? userView.intValue() : 0;
 
@@ -129,7 +138,7 @@ public class BookFragment extends Fragment {
                                     String timeCook = document.getString("cooking_time");
                                     boolean checkLike = true;
                                     boolean checkLove = true;
-                                    DanhSachMonAn monAn2 = new DanhSachMonAn(id,ten,hinhAnh,categories_id,nguyenlieu,buocnau,checkLike,userCoinInt,userLikeInt,userViewInt,timeCook,checkLove);
+                                    DanhSachMonAn monAn2 = new DanhSachMonAn(id,ten,hinhAnh,video,categories_id,nguyenlieu,buocnau,tips,checkLike,userCoinInt,userLikeInt,userViewInt,timeCook,checkLove);
                                     DanhSachMonAn.add(monAn2);
                                 } else {
 

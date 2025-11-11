@@ -121,99 +121,106 @@ public class SignActivity extends AppCompatActivity {
     private void CheckSign() {
         String userName = edtUnameSign.getText().toString();
         String password = edtPword1.getText().toString();
-        mAuth.createUserWithEmailAndPassword(userName,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful())
-            {
-                Log.d("Main", "createUserWithEmail:success");
-                FirebaseUser user = mAuth.getCurrentUser();
-                SenRequest();
-                creatChat();
-            } else {
-                Log.w("Main", "createUserWithEmail:failure", task.getException());
-                String logCat = String.valueOf(task.getException());
-                    String result = logCat.substring(60, 115);
-                if (logCat.equals("The email address is already in use by another account")){
-                    Toast.makeText(SignActivity.this, "Tài khoản đã tồn tại",
-                            Toast.LENGTH_SHORT).show();
-                } else
-                Toast.makeText(SignActivity.this, "Đăng ký thất bại",
-                        Toast.LENGTH_SHORT).show();
-            }
-            }
-
-        });
-
-
-
+        mAuth.createUserWithEmailAndPassword(userName, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            user.reload().addOnCompleteListener(reloadTask -> {
+                                FirebaseUser reloadedUser = mAuth.getCurrentUser();
+                                if (reloadedUser != null) {
+                                    String userId = reloadedUser.getUid();
+                                    Log.d("checkSign", userId);
+                                    SenRequest(reloadedUser);
+                                    creatChat(reloadedUser);
+                                }
+                            });
+                        }
+                    } else {
+                        Log.e("Auth", "Đăng ký thất bại: ", task.getException());
+                    }
+                });
 
     }
-    private void creatChat() {
+    private void creatChat(FirebaseUser user) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         String email = edtUnameSign.getText().toString();
-        FirebaseUser user = mAuth.getCurrentUser();
+
         String userId = user.getUid();
         db = FirebaseFirestore.getInstance();
         Map<String, Object> SenRequestUser = new HashMap<>();
 
         SenRequestUser.put("userId", userId);
-//
-      SenRequestUser.put("messages", new ArrayList<String>());
 
-        db.collection("conversations").add(SenRequestUser).addOnSuccessListener(documentReference ->
-                {  Log.d("Firestore", "Thêm thành công với ID: " + userId);
-                    intentOk();
+        SenRequestUser.put("messages", new ArrayList<String>());
 
+        db.collection("conversations")
+                .add(SenRequestUser)
+                .addOnSuccessListener(documentReference -> {
+                    String conversationId = documentReference.getId();
+                    Log.d("Firestore", "Tạo chat thành công với ID: " + conversationId);
+
+//                    saveConversationIdToUser(userId, conversationId);
                 })
                 .addOnFailureListener(e -> {
-
-                    Log.e("Firestore", "Lỗi khi thêm dữ liệu!", e);
-                    Toast.makeText(SignActivity.this, "Lỗi khi gửi yêu cầu!", Toast.LENGTH_SHORT).show();
+                    Log.e("Firestore", "Lỗi khi tạo chat", e);
+                    Toast.makeText(SignActivity.this, "Tạo chat thất bại", Toast.LENGTH_SHORT).show();
                 });
+
     }
 
-    private void SenRequest() {
+    private void SenRequest(FirebaseUser user) {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         String email = edtUnameSign.getText().toString();
-        FirebaseUser user = mAuth.getCurrentUser();
+
+
+        if (user == null) {
+            Toast.makeText(this, "Lỗi xác thực, vui lòng đăng nhập lại!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String userId = user.getUid();
         db = FirebaseFirestore.getInstance();
         Map<String, Object> SenRequestUser = new HashMap<>();
-//        SenRequestUser.put("avata", "https://i.pinimg.com/736x/b1/8a/4a/b18a4ac5454c2e3d8d0b519f3b84dcb6.jpg");
-//        SenRequestUser.put("birth", "");
-//        SenRequestUser.put("e-mail", email);
-//
-//        SenRequestUser.put("favorites", new ArrayList<String>());
-//        SenRequestUser.put("like", new ArrayList<String>());
-//        SenRequestUser.put("notified", new ArrayList<String>());
-//
-//        SenRequestUser.put("note", "0");
-//        SenRequestUser.put("lv", "0");
-//        SenRequestUser.put("name", "test");
-//        SenRequestUser.put("coin", 100);
+        SenRequestUser.put("avata", "https://i.pinimg.com/736x/b1/8a/4a/b18a4ac5454c2e3d8d0b519f3b84dcb6.jpg");
+        SenRequestUser.put("birth", "");
+        SenRequestUser.put("email", email);
+        SenRequestUser.put("userId", userId);
+        SenRequestUser.put("favorites", new ArrayList<String>());
+        SenRequestUser.put("like", new ArrayList<String>());
+        SenRequestUser.put("notified", new ArrayList<String>());
+        SenRequestUser.put("imageUrl", "https://i.pinimg.com/736x/b1/8a/4a/b18a4ac5454c2e3d8d0b519f3b84dcb6.jpg");
+        SenRequestUser.put("note", "0");
+        SenRequestUser.put("lv", "0");
+        SenRequestUser.put("name", "");
+        SenRequestUser.put("coin", 100);
         SenRequestUser.put("timestamp", System.currentTimeMillis());
 
-        db.collection("user").document(userId).set(SenRequestUser).addOnSuccessListener(documentReference ->
-                {  Log.d("Firestore", "Thêm thành công với ID: " + userId);
-                    intentOk();
-
+        db.collection("user").document(userId).set(SenRequestUser)
+                .addOnSuccessListener(aVoid -> {
+                    FirebaseUser reloadedUser = mAuth.getCurrentUser();
+                    if (reloadedUser != null) {
+                        intentOk(reloadedUser);
+                    }
                 })
                 .addOnFailureListener(e -> {
-
                     Log.e("Firestore", "Lỗi khi thêm dữ liệu!", e);
                     Toast.makeText(SignActivity.this, "Lỗi khi gửi yêu cầu!", Toast.LENGTH_SHORT).show();
                 });
+
     }
 
-    private void intentOk() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        String userId = user.getUid();
-        Toast.makeText(getApplicationContext(), ((FirebaseUser) user).getEmail(), Toast.LENGTH_LONG).show();
-        Intent intent = new Intent(SignActivity.this,UpdateProfile.class);
-        intent.putExtra("userId",userId);
-        startActivity(intent);
+    private void intentOk(FirebaseUser user) {
 
+        String userId = user.getUid();
+        Log.d("IntentOK", "Chuyển sang UpdateProfile với userId = " + userId);
+        Toast.makeText(getApplicationContext(), ((FirebaseUser) user).getEmail(), Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(SignActivity.this,UpdateProfileActivity.class);
+        intent.putExtra("ID",userId);
+        intent.putExtra("AVATA","https://i.pinimg.com/736x/b1/8a/4a/b18a4ac5454c2e3d8d0b519f3b84dcb6.jpg");
+        intent.putExtra("MAIL",user.getEmail());
+        intent.putExtra("TYPE",1);
+        startActivity(intent);
         finish();
     }
 

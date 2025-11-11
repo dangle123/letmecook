@@ -1,13 +1,10 @@
 package com.example.letmecook.Fragment;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,24 +16,24 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.letmecook.Activity.ChangePassWord;
 import com.example.letmecook.Activity.LoginActivity;
+import com.example.letmecook.Activity.SaveFormulasActivity;
 import com.example.letmecook.Activity.SendRequest;
 import com.example.letmecook.Activity.UpCoinActivity;
-import com.example.letmecook.Model.DanhSachMonAn;
+import com.example.letmecook.Activity.UpdateProfileActivity;
+import com.example.letmecook.Model.User;
 import com.example.letmecook.R;
+import com.example.letmecook.cache.CachedUserManager;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileFragment extends Fragment {
     private TextView Logout, UpCoin,ChanePass,SenRequest;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    TextView tvNameUser, tvProfilename,tvProfilebirth,tvProfileemail,tvLv,tvCoin, tvSetting;
-    ImageView imgUser;
+    TextView tvNameUser, tvProfilename,tvProfilebirth,tvProfileemail,tvLv,tvCoin, tvSetting,tvSaveOffline,tvnote;
+    ImageView imgUser,imageUpdate;
 
     private List<Long> favorites;
 
@@ -51,6 +48,7 @@ public class ProfileFragment extends Fragment {
         tvProfilebirth = view.findViewById(R.id.tvProfileBirth);
         tvProfileemail = view.findViewById(R.id.tvProfileEmail);
         Logout = view.findViewById(R.id.logout);
+        tvnote = view.findViewById(R.id.note);
         tvNameUser = view.findViewById(R.id.tvNameUser);
         imgUser = view.findViewById(R.id.imgUser);
         tvLv = view.findViewById(R.id.tvLv);
@@ -58,8 +56,25 @@ public class ProfileFragment extends Fragment {
         SenRequest = view.findViewById(R.id.tvSendRequest);
         UpCoin = view.findViewById(R.id.tvUpCoin);
         tvSetting = view.findViewById(R.id.tvSetting);
+        tvSaveOffline = view.findViewById(R.id.tvSaveOffline);
+        imageUpdate = view.findViewById(R.id.imgUpdate);
+        UserDetail();
+        User cacheUser = CachedUserManager.getCurrentUser(getContext());
+        String id = cacheUser.getUserId();
+        String name = cacheUser.getName();
+        String avatarUrl = cacheUser.getAvata();
+        String email = cacheUser.getEmail();
+        String birth = cacheUser.getBirth();
 
-
+        imageUpdate.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), UpdateProfileActivity.class);
+            intent.putExtra("ID",id);
+            intent.putExtra("Name",name);
+            intent.putExtra("MAIL",email);
+            intent.putExtra("AVATA",avatarUrl);
+            intent.putExtra("BIRTH",birth);
+            startActivity(intent);
+        });
 
         tvSetting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +83,10 @@ public class ProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
+        tvSaveOffline.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), SaveFormulasActivity.class);
+            startActivity(intent);
+        });
         SenRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,8 +104,6 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-
-
         Logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,51 +119,52 @@ public class ProfileFragment extends Fragment {
 
 
 
-        UserDetail();
+
 
         return view;
     }
     private void UserDetail() {
+        User cacheUser = CachedUserManager.getCurrentUser(getContext());
+
+        if (cacheUser == null) {
+
+            tvProfilename.setText("Người dùng chưa đăng nhập");
+            tvProfileemail.setText("example@email.com");
+            tvProfilebirth.setText("dd/mm/yy");
+            tvCoin.setText("0");
+            tvLv.setText("Đầu bếp tập sự");
+            tvNameUser.setText("Khách");
+            imgUser.setImageResource(R.drawable.placeholder);
+            return;
+        }
+
+        String name = cacheUser.getName();
+        String avatarUrl = cacheUser.getAvata();
+        String email = cacheUser.getEmail();
+        String birth = cacheUser.getBirth();
+        String lv = "Đầu bếp tập sự";
 
 
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            String userId = user.getUid(); // Lấy ID user
+        Long coin = Long.valueOf(cacheUser.getCoin());
+        int coinInt = coin != null ? coin.intValue() : 0;
 
-            db.collection("user").document(userId)
-                    .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            String name = documentSnapshot.getString("name");
-                            String avatarUrl = documentSnapshot.getString("avata");
-                            String email = documentSnapshot.getString("e-mail");
-                            String birth = documentSnapshot.getString("birth");
-                            String lv = documentSnapshot.getString("lv");
-                            Long coin = documentSnapshot.getLong("coin");
-                            int coinInt = coin != null ? coin.intValue() : 0;
-                            tvCoin.setText(String.valueOf(coinInt));
-                            tvProfileemail.setText(email != null ? email : "Tên không có sẵn");
-                            tvProfilename.setText(name != null ? name : "example@email.com");
-                            tvProfilebirth.setText(birth != null ? birth : "dd/mm/yy");
-                            tvNameUser.setText(name != null ? name : "Chưa xác định");
-                            tvLv.setText(lv != null ? lv : "lv chưa có");
-                            if (avatarUrl != null && !avatarUrl.isEmpty()) {
-                                Glide.with(requireContext())
-                                        .load(avatarUrl)
-                                        .transform(new RoundedCorners(30))
-                                        .into(imgUser);
-                            } else {
-                                imgUser.setImageResource(R.drawable.placeholder);
-                            }
+        tvCoin.setText(String.valueOf(coinInt));
+        tvProfileemail.setText(email != null ? email : "Không có email");
+        tvProfilename.setText(name != null ? name : "Chưa có tên");
+        tvProfilebirth.setText(birth != null ? birth : "dd/mm/yy");
+        tvNameUser.setText(name != null ? name : "Khách");
+        tvLv.setText(lv);
 
-
-                        } else {
-
-                        }
-                    })
-                    .addOnFailureListener(e -> Log.e("UserInfo", "Lỗi khi lấy dữ liệu", e));
+        if (avatarUrl != null && !avatarUrl.isEmpty()) {
+            Glide.with(requireContext())
+                    .load(avatarUrl)
+                    .transform(new RoundedCorners(30))
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.placeholder)
+                    .into(imgUser);
         } else {
-            Log.e("UserInfo", "Người dùng chưa đăng nhập!");
+            imgUser.setImageResource(R.drawable.placeholder);
         }
     }
+
 }

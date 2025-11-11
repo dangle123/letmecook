@@ -11,7 +11,7 @@
     <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="90dp"
         android:background="@color/backgroud"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,13 +20,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="35dp"
+            android:layout_height="40dp"
             android:background="@color/header">
 
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="50dp"
             android:background="@color/backgroud">
             <TextView
                 android:layout_width="match_parent"
@@ -108,7 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Lever"
+                android:text="Cấp bậc"
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="@+id/imageView5"
@@ -234,13 +234,22 @@
                     app:layout_constraintStart_toStartOf="@+id/tvProfileEmail"
                     app:layout_constraintTop_toTopOf="@+id/imageView8" />
 
+                <ImageView
+                    android:id="@+id/imgUpdate"
+                    android:layout_width="95dp"
+                    android:layout_height="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/textView10"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@tools:sample/avatars" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="280dp"
+        android:layout_height="330dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
@@ -307,7 +316,7 @@
                     android:layout_marginTop="10dp"
                     app:layout_constraintStart_toStartOf="@+id/imageView11"
                     app:layout_constraintTop_toBottomOf="@+id/imageView11"
-                    app:srcCompat="@drawable/logout" />
+                    app:srcCompat="@drawable/note" />
 
                 <TextView
                     android:id="@+id/tvSetting"
@@ -346,11 +355,11 @@
                     app:layout_constraintTop_toTopOf="@+id/imageView11" />
 
                 <TextView
-                    android:id="@+id/logout"
+                    android:id="@+id/note"
                     android:layout_width="300dp"
                     android:layout_height="25dp"
                     android:gravity="center_vertical"
-                    android:text="Đăng xuất"
+                    android:text="Ghi chú"
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="@+id/tvSendRequest"
@@ -361,20 +370,19 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_marginTop="10dp"
-                    app:layout_constraintStart_toStartOf="@+id/imageView12"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView12"
                     android:background="@drawable/contract"
-                    />
+                    app:layout_constraintStart_toStartOf="@+id/imageView12"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView12" />
 
                 <TextView
-                    android:id="@+id/textView15"
+                    android:id="@+id/tvSaveOffline"
                     android:layout_width="300dp"
                     android:layout_height="25dp"
                     android:gravity="center_vertical"
-                    android:text="Điều khoản sử dụng"
+                    android:text="Công thức đã lưu"
                     android:textColor="@color/black"
                     android:textSize="14sp"
-                    app:layout_constraintStart_toStartOf="@+id/logout"
+                    app:layout_constraintStart_toStartOf="@+id/note"
                     app:layout_constraintTop_toTopOf="@+id/imageView4" />
 
                 <TextView
@@ -382,12 +390,35 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="32dp"
+                    android:text="Version 1.0.0"
                     android:textColor="@color/black"
                     android:textSize="14sp"
-                    android:text="Version 1.0.0"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
+
+                <ImageView
+                    android:id="@+id/imageView16"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView4"
+                    app:layout_constraintStart_toStartOf="@+id/imageView4"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView4"
+                    app:srcCompat="@drawable/logout" />
+
+                <TextView
+                    android:id="@+id/logout"
+                    android:layout_width="300dp"
+                    android:layout_height="25dp"
+                    android:gravity="center_vertical"
+                    android:text="Đăng xuất"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/imageView16"
+                    app:layout_constraintStart_toStartOf="@+id/tvSaveOffline"
+                    app:layout_constraintTop_toTopOf="@+id/imageView16"
+                    app:layout_constraintVertical_bias="0.0" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

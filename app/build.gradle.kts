@@ -59,4 +59,26 @@ dependencies {
     implementation ("com.android.volley:volley:1.2.1")
 
     implementation ("com.google.firebase:firebase-database:20.3.0")
+
+    implementation ("com.google.firebase:firebase-storage:21.0.1")
+    implementation ("com.cloudinary:cloudinary-android:2.4.0")
+
+    implementation ("io.reactivex.rxjava3:rxjava:3.1.8")
+    implementation ("io.reactivex.rxjava3:rxandroid:3.0.2")
+    implementation("com.squareup.retrofit2:adapter-rxjava3:2.9.0")
+
+    implementation("androidx.room:room-runtime:2.6.1")
+    annotationProcessor ("androidx.room:room-compiler:2.6.1")
+
+    implementation("androidx.room:room-rxjava3:2.6.1")
+    implementation("com.google.code.gson:gson:2.10.1")
+
+
+    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
+
+    implementation ("com.google.android.exoplayer:exoplayer:2.19.1")
+    implementation ("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation ("com.google.android.exoplayer:exoplayer-ui:2.19.1")
+    implementation ("com.google.android.exoplayer:exoplayer-core:2.19.1")
+    implementation ("com.airbnb.android:lottie:6.4.0")
 }

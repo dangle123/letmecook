@@ -14,7 +14,19 @@
         android:background="@drawable/item_backgrond"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iconlike"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_weight="1"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toStartOf="@+id/iconDown"
+        app:layout_constraintTop_toTopOf="@+id/iconDown"
+        android:background="@drawable/save" />
 
     <ImageView
         android:id="@+id/imageMonAn"
@@ -37,7 +49,7 @@
         android:gravity="center"
         android:textColor="@color/white"
         android:text="Ten mon an"
-        app:layout_constraintEnd_toStartOf="@+id/iconlike"
+        app:layout_constraintEnd_toStartOf="@+id/iconDown"
         app:layout_constraintStart_toEndOf="@+id/imageMonAn"
         app:layout_constraintTop_toTopOf="@+id/viewMonAn" />
 
@@ -53,15 +65,14 @@
         app:layout_constraintTop_toBottomOf="@+id/textTenMonAn" />
 
     <ImageView
-        android:id="@+id/iconlike"
+        android:id="@+id/iconDown"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginEnd="30dp"
-        android:background="@drawable/save"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/down"
         app:layout_constraintBottom_toBottomOf="@+id/viewMonAn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/viewMonAn"
-         />
+        app:layout_constraintTop_toTopOf="@+id/viewMonAn" />
 
     <TextView
         android:id="@+id/tvTimeCook"

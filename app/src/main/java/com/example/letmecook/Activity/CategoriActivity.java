@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,6 +45,8 @@ public class CategoriActivity extends AppCompatActivity {
     private  boolean checkLove = false;
     private int selectedCategoryId = -1;
     private int selectedPosition = -1;
+
+    private ImageView edtSearch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +74,7 @@ public class CategoriActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclervewItemCategori);
         recyclerViewLoadmonan = findViewById(R.id.recyclerViewCategori);
-
+        edtSearch = findViewById(R.id.edtSearch);
         loaiMonAnList = new ArrayList<>();
 
 
@@ -91,8 +95,22 @@ public class CategoriActivity extends AppCompatActivity {
 
         loadMonAn(categoryId);
 
+        edtSearch.setOnClickListener(v -> {
+            Intent intentSearch = new Intent(this, SearchActivity.class);
+            startActivity(intentSearch);
+        });
+        monAnAdapter.setOnItemClickListener(new ListMonAnAdapter.OnItemClickListener() {
 
+            public void onItemClick(DanhSachMonAn DanhSachMonAn,int position) {
+                Intent intent = new Intent(CategoriActivity.this, DetailItem.class);
+                intent.putExtra("TEN_MON_AN", DanhSachMonAn.getTen());
+                intent.putExtra("HINH_ANH", DanhSachMonAn.getHinhAnh());
+                intent.putExtra("ID",DanhSachMonAn.getId());
+                intent.putExtra("VIDEO",DanhSachMonAn.getVideo());
 
+                startActivity(intent);
+            }
+        });
         adapter.setOnItemClickListener(new CategoriAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int categoryId) {
@@ -141,9 +159,12 @@ public class CategoriActivity extends AppCompatActivity {
                 String id = document.getString("id");
                 String ten = document.getString("title");
                 String hinhAnh = document.getString("url");
+
                 String categories_id = document.getString("categories_id");
-                ArrayList<Long> nguyenlieu = (ArrayList<Long>) document.get("ingredients");
-                ArrayList<Long> buocnau = (ArrayList<Long>) document.get("instructions");
+                String video = document.getString("video");
+                ArrayList<String> nguyenlieu = (ArrayList<String>) document.get("ingredients");
+                ArrayList<String> buocnau = (ArrayList<String>) document.get("instructions");
+                ArrayList<String> tips = (ArrayList<String>) document.get("tips");
                 Long userView = document.getLong("view");
                 Integer userViewInt = userView != null ? userView.intValue() : 0;
 
@@ -174,7 +195,7 @@ public class CategoriActivity extends AppCompatActivity {
                     }
                 }
 
-                DanhSachMonAn monAn = new DanhSachMonAn(id,ten,hinhAnh,categories_id,nguyenlieu,buocnau,checkLike,userCoinInt,userViewInt,userLikeInt,timeCook,checkLove);
+                DanhSachMonAn monAn = new DanhSachMonAn(id,ten,hinhAnh,video,categories_id,nguyenlieu,tips,buocnau,checkLike,userCoinInt,userViewInt,userLikeInt,timeCook,checkLove);
                 DanhSachMonAn.add(monAn);
 
             }

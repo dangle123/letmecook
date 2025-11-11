@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="412dp"
+        android:layout_height="60dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="1dp">
@@ -27,10 +27,10 @@
                 tools:srcCompat="@tools:sample/avatars" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/boder_linear"
+                android:layout_width="291dp"
+                android:layout_height="53dp"
                 android:layout_marginStart="10dp"
+                android:background="@drawable/boder_linear"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageUsercomment"
@@ -43,9 +43,12 @@
                     <TextView
                         android:id="@+id/tvNameUserComment"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="20dp"
                         android:layout_marginStart="10dp"
                         android:text="TextView"
+                        android:textColor="@color/black"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -53,10 +56,26 @@
                         android:id="@+id/tvComment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/size10dp"
                         android:layout_marginTop="5dp"
+                        android:layout_marginRight="@dimen/size10dp"
+                        android:layout_marginBottom="@dimen/size10dp"
                         android:text="TextView"
+                        android:textColor="@color/black"
+                        android:textSize="16dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/tvNameUserComment"
-                        app:layout_constraintTop_toBottomOf="@+id/tvNameUserComment" />
+                        app:layout_constraintTop_toBottomOf="@+id/tvNameUserComment"
+                        app:layout_constraintVertical_bias="0.0" />
+
+                    <TextView
+                        android:id="@+id/tvTimeComment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="5dp"
+                        android:text="TextView"
+                        app:layout_constraintStart_toEndOf="@+id/tvNameUserComment"
+                        tools:layout_editor_absoluteY="0dp" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
 

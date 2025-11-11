@@ -19,9 +19,15 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.letmecook.Fragment.NoteFragment;
+import com.example.letmecook.Model.User;
 import com.example.letmecook.R;
+import com.example.letmecook.cache.CachedUserManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 public class LoginActivity extends AppCompatActivity {
     EditText edtUname,edtPword;
     TextView lblForgot;
@@ -50,8 +56,6 @@ public class LoginActivity extends AppCompatActivity {
         if (userID != null) {
             Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
             intent.putExtra("ID_USER", userID);
-
-
             startActivity(intent);
             finish();
         } else {
@@ -126,19 +130,40 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(userName, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
-                        if (user != null) {
-                            String userId = user.getUid();
+                        if (firebaseUser != null) {
+                            String userId = firebaseUser.getUid();
+                            FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                            Log.d("Firebase", "User ID: " + userId);
+                            db.collection("user").document(userId)
+                                    .get()
+                                    .addOnSuccessListener(snapshot -> {
+                                        if (snapshot.exists()) {
+                                            User user = snapshot.toObject(User.class);
+                                            if (user != null) {
+                                                Toast.makeText(this, "Đăng nhập thành công! " + user.getName(), Toast.LENGTH_SHORT).show();
+                                                CachedUserManager.saveUser(this, user);
+                                                Log.d("FirestoreLogin", "User cached: " + user.getName());
+                                                startActivity(new Intent(this, HomeActivity.class));
+                                                finish();
+                                            }
+                                        } else {
+                                            Toast.makeText(this, "Không tìm thấy dữ liệu người dùng!", Toast.LENGTH_SHORT).show();
+                                            Log.d("FirestoreLogin", "Không tìm thấy document userId: " + userId);
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Log.e("FirestoreLogin", "Lỗi tải dữ liệu người dùng", e);
+                                        Toast.makeText(this, "Lỗi tải dữ liệu người dùng!", Toast.LENGTH_SHORT).show();
+                                    });
                         }
-                        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                        finish();
                     } else {
-                        Toast.makeText(this, "Đăng nhập thất bại!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Sai tài khoản hoặc mật khẩu!", Toast.LENGTH_SHORT).show();
+                        Log.e("FirebaseAuth", "Đăng nhập thất bại: " + task.getException());
                     }
                 });
+
+
     }
 }

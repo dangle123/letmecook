@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/linearLayout7"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:orientation="horizontal"
         android:background="@color/header"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,7 +21,7 @@
     <LinearLayout
         android:id="@+id/linearLayout9"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@color/backgroud"

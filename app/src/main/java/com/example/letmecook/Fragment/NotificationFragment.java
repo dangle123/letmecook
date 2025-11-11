@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,6 +30,7 @@ public class NotificationFragment extends Fragment {
     private NotifiAdapter notiAdapter;
     private RecyclerView recyclerviewNotifi;
     private FirebaseFirestore db;
+    private ImageView imgNodata;
     private List<Long> favorites = new ArrayList<>();
     private List<danhSachNotifi> danhSachNoti = new ArrayList<>();
 
@@ -39,7 +41,7 @@ public class NotificationFragment extends Fragment {
         recyclerviewNotifi = view.findViewById(R.id.recyclerviewNotifi);
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
-
+        imgNodata = view.findViewById(R.id.imageNodata);
 //        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 //        recyclerviewNotifi.setLayoutManager(layoutManager);
 
@@ -88,6 +90,7 @@ public class NotificationFragment extends Fragment {
 
                         for (DocumentSnapshot document : queryDocumentSnapshots) {
                             if (document.exists()) {
+                                imgNodata.setVisibility(View.GONE);
                                     String title = document.getString("title") != null ? document.getString("title") : "No Title";
                                     String type = document.getString("type") != null ? document.getString("type") : "No Type";
                                     String note = document.getString("note") != null ? document.getString("note") : " no note" ;
@@ -101,7 +104,7 @@ public class NotificationFragment extends Fragment {
                         }
 
                     } else {
-
+                        imgNodata.setVisibility(View.VISIBLE);
                     }
 
                     notiAdapter.notifyDataSetChanged();

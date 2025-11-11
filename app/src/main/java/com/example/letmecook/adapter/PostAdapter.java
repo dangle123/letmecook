@@ -1,24 +1,39 @@
 package com.example.letmecook.adapter;
 
-import com.example.letmecook.Activity.CommentActivity;
+
+
+import static androidx.core.app.ActivityCompat.startActivityForResult;
+import static androidx.core.content.ContextCompat.startActivity;
+
+import com.example.letmecook.Activity.CreatPostActivity;
+import com.example.letmecook.Activity.MainActivity;
+import com.example.letmecook.Model.DanhSachBinhLuan;
 import com.example.letmecook.Model.User;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.letmecook.Model.DanhSachPost;
 import com.example.letmecook.R;
 import com.example.letmecook.cache.CachedUserManager;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,19 +41,24 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 
-import java.security.Timestamp;
-import java.text.ParseException;
+import org.w3c.dom.Comment;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int TYPE_CREATE_POST = 0;  // Cell "bạn đang nghĩ gì?"
-    private static final int TYPE_POST = 1;         // Cell bài post
+    private static final int TYPE_CREATE_POST = 0;
+    private static final int TYPE_POST = 1;
 
     private Context context;
     private ArrayList<DanhSachPost> danhsachPost;
@@ -50,7 +70,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        // Vị trí đầu tiên là ô “bạn đang nghĩ gì?”
+
         if (position == 0) return TYPE_CREATE_POST;
         else return TYPE_POST;
     }
@@ -68,6 +88,40 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             return new PostViewHolder(view);
         }
     }
+    private void loadComments(CollectionReference commentsRef,
+                              List<DanhSachBinhLuan> commentList,
+                              CommentAdapter CommentAdapter) {
+
+        commentsRef
+                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    commentList.clear();
+
+                    for (DocumentSnapshot doc : querySnapshot) {
+                        DanhSachBinhLuan comment = doc.toObject(DanhSachBinhLuan.class);
+                        if (comment != null) {
+                            commentList.add(comment);
+
+                        }
+                    }
+
+                    CommentAdapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> Log.e("Firestore", "Lỗi tải comment: ", e));
+    }
+
+    public interface OnPostBoxClickListener {
+        void onCreatePostClicked();
+    }
+
+    private OnPostBoxClickListener listener;
+
+    public void setOnPostBoxClickListener(OnPostBoxClickListener listener) {
+        this.listener = listener;
+    }
+
+
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
@@ -82,13 +136,13 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference ref = database.getReference("users").child(userId);
-            ref.keepSynced(true); // giữ đồng bộ dữ liệu người dùng
+            ref.keepSynced(true);
 
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     User user = dataSnapshot.getValue(User.class);
-                    // dữ liệu này sẽ lấy từ cache nếu offline
+
                 }
 
                 @Override
@@ -97,7 +151,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
             CreatePostViewHolder vh = (CreatePostViewHolder) holder;
-            User cachedUser = CachedUserManager.getCurrentUser();
+            User cachedUser = CachedUserManager.getCurrentUser(context);
             String image = cachedUser.getAvata();
             Log.e("dataCache", "data image" + image);
             if (cachedUser != null) {
@@ -108,25 +162,98 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             .load(imageUserUrl)
                             .placeholder(R.drawable.placeholder)
                             .circleCrop()
-                            .into(vh.imageUserPost); // hoặc imageView khác tùy layout
+                            .into(vh.imageUserPost);
                 } else {
                     vh.imageUserPost.setImageResource(R.drawable.placeholder);
                 }
             }
 
-            vh.txtWhatsOnYourMind.setOnClickListener(v -> {
-                // TODO: mở màn hình tạo bài post mới
-                Intent intent = new Intent(context, CommentActivity.class);
+            vh.viewPostBox.setOnClickListener(v -> {
+                if (listener != null) {
+                    listener.onCreatePostClicked();
+                }
 
-                // Nếu bạn muốn truyền thêm thông tin (ví dụ id bài post hoặc user):
-                intent.putExtra("userId", userId);
-
-                context.startActivity(intent);
             });
-        } else if (holder instanceof PostViewHolder) {
-            DanhSachPost post = danhsachPost.get(position - 1); // trừ 1 vì ô đầu là “create post”
 
+        } else if (holder instanceof PostViewHolder) {
+            DanhSachPost post = danhsachPost.get(position - 1);
+            User currentUser = CachedUserManager.getCurrentUser(context);
+            String userId = currentUser.getUserId();
             PostViewHolder vh = (PostViewHolder) holder;
+            String postId = post.getPostId();
+
+
+             DocumentSnapshot lastVisible = null;
+            boolean isLoading = false;
+             List<DanhSachBinhLuan> commentList = new ArrayList<>();
+            CommentAdapter adapter;
+
+
+
+            vh.viewComment.setOnClickListener(v -> {
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+               CollectionReference commentsRef = db.collection("post")
+                        .document(postId)
+                        .collection("comments");
+
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
+                View view = LayoutInflater.from(context).inflate(R.layout.item_comment_detail, null);
+                bottomSheetDialog.setContentView(view);
+                bottomSheetDialog.getWindow()
+                        .setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+                RecyclerView recyclerViewComment = view.findViewById(R.id.recyclerViewComment);
+                TextView tvUserPost = view.findViewById(R.id.tvUserPost);
+                ImageView imgSent = view.findViewById(R.id.imgSentComment);
+                EditText edtComment = view.findViewById(R.id.edtCommentPost);
+
+
+                List<DanhSachBinhLuan> danhsachComment = new ArrayList<>();
+                CommentAdapter adapterComment = new CommentAdapter(danhsachComment, context);
+                recyclerViewComment.setLayoutManager(new LinearLayoutManager(context));
+                recyclerViewComment.setAdapter(adapterComment);
+                recyclerViewComment.setAdapter(adapterComment);
+                loadComments(commentsRef, danhsachComment, adapterComment);
+
+                tvUserPost.setText("Bài viết của " + post.getUserName());
+                edtComment.addTextChangedListener(new TextWatcher() {
+                    @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (s.toString().trim().length() > 0) {
+                            imgSent.setImageResource(R.drawable.sen2);
+                        } else {
+                            imgSent.setImageResource(R.drawable.sent1);
+                        }
+                    }
+                    @Override public void afterTextChanged(Editable s) {}
+                });
+
+                imgSent.setOnClickListener(v1 -> {
+                    String content = edtComment.getText().toString().trim();
+                    if (content.isEmpty()) return;
+
+                    DanhSachBinhLuan comment = new DanhSachBinhLuan(
+                            userId,
+                            currentUser.getName(),
+                            content,
+                            String.valueOf(System.currentTimeMillis()),
+                            currentUser.getAvata()
+                    );
+
+                    commentsRef.add(comment)
+                            .addOnSuccessListener(docRef -> {
+                                edtComment.setText("");
+                                loadComments(commentsRef, danhsachComment, adapterComment);
+                            })
+                            .addOnFailureListener(e -> Log.e("Firestore", "Error adding comment", e));
+                });
+
+                bottomSheetDialog.show();
+            });
+
+
 
             vh.tvNamePost.setText(post.getUserName());
             vh.tvLike.setText( post.getLikes().size() + " Lượt thích");
@@ -171,25 +298,29 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        // +1 vì có thêm ô “Bạn đang nghĩ gì?”
+
         return danhsachPost.size() + 1;
     }
 
-    // ViewHolder cho ô "Bạn đang nghĩ gì?"
+
     public static class CreatePostViewHolder extends RecyclerView.ViewHolder {
         TextView txtWhatsOnYourMind;
+        View viewPostBox;
         ImageView imageUserPost;
         public CreatePostViewHolder(@NonNull View itemView) {
             super(itemView);
+            viewPostBox = itemView.findViewById(R.id.viewPostBox);
             txtWhatsOnYourMind = itemView.findViewById(R.id.edtPostBox);
             imageUserPost = itemView.findViewById(R.id.imageUserPost);
         }
     }
 
-    // ViewHolder cho bài post
+
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         TextView tvContentPost, tvNamePost, tvTime, tvLike, tvComment;
         ImageView imgPost,imgUser;
+
+        LinearLayout viewComment, viewLike;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -200,6 +331,8 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             tvComment = itemView.findViewById(R.id.tvCommemtPost);
             imgPost = itemView.findViewById(R.id.imageContentPost);
             imgUser = itemView.findViewById(R.id.imageUser);
+            viewComment = itemView.findViewById(R.id.viewComment);
+            viewLike = itemView.findViewById(R.id.viewLike);
         }
     }
 }

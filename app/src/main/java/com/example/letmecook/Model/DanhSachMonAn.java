@@ -9,6 +9,16 @@ public class DanhSachMonAn {
     private String hinhAnh;
     private String timecook;
 
+    private String video;
+
+    public String getVideo() {
+        return video;
+    }
+
+    public void setVideo(String video) {
+        this.video = video;
+    }
+
     public String getTimecook() {
         return timecook;
     }
@@ -77,8 +87,29 @@ public class DanhSachMonAn {
     }
 
     private  String categories_id;
-    private ArrayList<Long> nguyenlieu;
-    protected ArrayList<Long> buocnau;
+    private ArrayList<String> nguyenlieu;
+    protected ArrayList<String> buocnau;
+    protected ArrayList<String> tips;
+
+    public void setNguyenlieu(ArrayList<String> nguyenlieu) {
+        this.nguyenlieu = nguyenlieu;
+    }
+    public ArrayList<String> getNguyenlieu() {
+        return nguyenlieu;
+    }
+    public void setBuocnau(ArrayList<String> buocnau) {
+        this.buocnau = buocnau;
+    }
+    public ArrayList<String> getBuocnau() {
+        return buocnau;
+    }
+    public ArrayList<String> getTips() {
+        return tips;
+    }
+
+    public void setTips(ArrayList<String> tips) {
+        this.tips = tips;
+    }
 
     public String getTen() {
         return ten;
@@ -104,28 +135,20 @@ public class DanhSachMonAn {
         this.categories_id = categories_id;
     }
 
-    public ArrayList<Long> getNguyenlieu() {
-        return nguyenlieu;
+
+
+    public String getCategoriesId() {
+        return categories_id;
     }
 
-    public void setNguyenlieu(ArrayList<Long> nguyenlieu) {
-        this.nguyenlieu = nguyenlieu;
-    }
-
-    public ArrayList<Long> getBuocnau() {
-        return buocnau;
-    }
-
-    public void setBuocnau(ArrayList<Long> buocnau) {
-        this.buocnau = buocnau;
-    }
 
     public DanhSachMonAn() {} // Bắt buộc để Firebase deserialize
 
-    public DanhSachMonAn(String id,String ten, String hinhAnh,String categories_id, ArrayList<Long> nguyenlieu,ArrayList<Long> buocnau, boolean checkLike, int coinUser, int viewUser, int likeUser,String timecook, boolean checkLove ) {
+    public DanhSachMonAn(String id,String ten, String hinhAnh,String video, String categories_id, ArrayList<String> nguyenlieu,ArrayList<String> buocnau,ArrayList<String> tips, boolean checkLike, int coinUser, int viewUser, int likeUser,String timecook, boolean checkLove ) {
        this.id = (id != null) ? id :"";
         this.ten = (ten != null) ? ten : "";
         this.hinhAnh = (hinhAnh != null) ? hinhAnh : "";
+        this.video = (video != null) ? video : "https://res.cloudinary.com/dqbehf1sz/video/upload/v1762085027/t%E1%BA%A3i_xu%E1%BB%91ng_gs3ibr.mp4";
         this.nguyenlieu = (nguyenlieu != null) ? new ArrayList<>(nguyenlieu) : new ArrayList<>();
         this.buocnau = (buocnau != null) ? new ArrayList<>(buocnau) : new ArrayList<>();
         this.categories_id = (categories_id != null) ? categories_id : "";;
@@ -135,6 +158,7 @@ public class DanhSachMonAn {
         this.viewUser = viewUser;
         this.timecook = timecook;
         this.checkLove = checkLove;
+        this.tips = (buocnau != null) ? new ArrayList<>(tips) : new ArrayList<>();
     }
 
 

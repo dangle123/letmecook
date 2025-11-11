@@ -43,13 +43,21 @@
                 android:layout_marginEnd="21dp"
                 android:background="@drawable/edittext_border"
                 android:ems="10"
-
+                android:textColor="@color/black"
                 android:inputType="text"
-                android:hint="Bạn đang nghĩ gì ?"
+                android:text="Bạn đang nghĩ gì ?"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageUserPost"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/viewPostBox"
+                android:layout_width="279dp"
+                android:layout_height="42dp"
+                app:layout_constraintBottom_toBottomOf="@+id/edtPostBox"
+                app:layout_constraintStart_toStartOf="@+id/edtPostBox"
+                app:layout_constraintTop_toTopOf="@+id/edtPostBox" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

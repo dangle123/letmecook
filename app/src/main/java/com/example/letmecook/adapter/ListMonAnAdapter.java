@@ -19,6 +19,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.example.letmecook.Activity.DetailItem;
 import com.example.letmecook.Model.DanhSachMonAn;
 import com.example.letmecook.R;
+import com.example.letmecook.cache.AppDatabase;
+import com.example.letmecook.cache.RecipeEntity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -26,6 +28,10 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class ListMonAnAdapter extends RecyclerView.Adapter<ListMonAnAdapter.ViewHolder> {
@@ -95,6 +101,7 @@ private boolean  book = true;
         ImageView iconLike;
         ImageView hinhAnh;
         ImageView iconLove;
+        ImageView iconDown;
         TextView tenMonAn,tvView,tvCoin,tvLike,tvTimecook;
 
 
@@ -120,7 +127,8 @@ private boolean  book = true;
             tvView = itemView.findViewById(R.id.tvView);
             tvTimecook = itemView.findViewById(R.id.tvTimeCook);
             viewMonAn = itemView.findViewById(R.id.viewMonAn);
-
+            iconDown = itemView.findViewById(R.id.iconDown);
+            iconDown.setOnClickListener(v -> saveOffline(currentMonAn));
             iconLike.setOnClickListener(v -> {
                 isLiked = !isLiked;
                 if (isLiked) {
@@ -212,6 +220,35 @@ private boolean  book = true;
         public  void actionView(final DanhSachMonAn monan ){
 
         }
+
+        private void saveOffline(DanhSachMonAn monan) {
+            Context context = itemView.getContext();
+            AppDatabase db = AppDatabase.getInstance(context);
+
+            RecipeEntity recipe = new RecipeEntity();
+            recipe.id = monan.getId();
+            recipe.title = monan.getTen();
+            recipe.imageUrl = monan.getHinhAnh();
+            recipe.categoryId = monan.getCategoriesId();
+            recipe.cookingTime = monan.getTimecook();
+            recipe.coin = monan.getCoinUser();
+            recipe.rating = monan.getLikeUser();
+            recipe.like = monan.getLikeUser();
+            recipe.view = monan.getViewUser();
+            recipe.ingredients = monan.getNguyenlieu();
+            recipe.instructions = monan.getBuocnau();
+            recipe.tips = monan.getTips();
+
+            Completable.fromAction(() -> db.recipeDao().insert(recipe))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(() -> {
+                        Toast.makeText(context, "Đã lưu ngoại tuyến!", Toast.LENGTH_SHORT).show();
+                    }, throwable -> {
+                        Toast.makeText(context, "Lỗi lưu ngoại tuyến!", Toast.LENGTH_SHORT).show();
+                    });
+        }
+
 
         public void bind(final DanhSachMonAn monan, final OnItemClickListener listener,int position) {
             this.currentMonAn = monan;

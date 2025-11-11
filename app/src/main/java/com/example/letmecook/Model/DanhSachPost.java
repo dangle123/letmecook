@@ -13,15 +13,22 @@ public class DanhSachPost {
     private List<String> likes;
     private List<String> comments;
     private  String userName;
+    private String postId;
 
 
 
     public DanhSachPost() {
     }
 
+    public String getPostId() {
+        return postId;
+    }
 
+    public void setPostId(String postId) {
+        this.postId = postId;
+    }
 
-    public DanhSachPost(String userId, String userName, String content, String timestamp, String imageUrl, String imageUser) {
+    public DanhSachPost(String userId, String userName, String content, String timestamp, String imageUrl, String imageUser, String postId) {
         this.userId = userId;
         this.content = content;
         this.timestamp = timestamp;
@@ -30,6 +37,7 @@ public class DanhSachPost {
         this.likes = new ArrayList<>();
         this.comments = new ArrayList<>();
         this.userName =  userName;
+        this.postId = postId;
     }
 
 

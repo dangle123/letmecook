@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import java.util.List;
 
 public class CategoriAdapter extends RecyclerView.Adapter<CategoriAdapter.ViewHolder> {
     private Context context;
+
     private int selectedPosition = RecyclerView.NO_POSITION;
     private List<LoaiMonAn> loaiMonAnList;
     private OnItemClickListener listener;
@@ -115,8 +117,10 @@ public class CategoriAdapter extends RecyclerView.Adapter<CategoriAdapter.ViewHo
         ImageView imageView;
         LinearLayout linearLayout;
 
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+
             tenLoaiTextView = itemView.findViewById(R.id.tenCategori);
             imageView = itemView.findViewById(R.id.imageCategori);
             linearLayout = itemView.findViewById(R.id.bachgroidCategori);

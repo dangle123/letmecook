@@ -3,6 +3,7 @@ package com.example.letmecook.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -22,8 +23,6 @@ public class AllItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_all_item);
-
-
         Intent intent = getIntent();
         if (intent != null) {
            String categories_id =  intent.getStringExtra("Tenloai");

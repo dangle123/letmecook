@@ -38,10 +38,10 @@ public class UpdateProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_update_profile);
-        btnUpdate = findViewById(R.id.btnUpdate);
-        edtBirth = findViewById(R.id.edtBirth);
-        edtUserName = findViewById(R.id.edtUserName);
-        edtEmail = findViewById(R.id.edtEmail);
+//        btnUpdate = findViewById(R.id.btnUpdate);
+//        edtBirth = findViewById(R.id.edtBirth);
+//        edtUserName = findViewById(R.id.edtUserName);
+//        edtEmail = findViewById(R.id.edtEmail);
 
 
          userId = getIntent().getStringExtra("userId");
